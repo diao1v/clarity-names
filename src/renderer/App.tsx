@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Settings as SettingsIcon } from 'lucide-react';
 import { Button } from './components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
 import { FileDropzone } from './components/FileDropzone';
 import { FileList } from './components/FileList';
 import { Settings } from './components/Settings';
+import { History } from './components/History';
+import { TemplateManager } from './components/TemplateManager';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
 
 function App() {
@@ -44,33 +47,49 @@ function App() {
           </Button>
         </div>
 
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Add Files</CardTitle>
-              <CardDescription>
-                Drop your files here or click to browse. Supported formats: PDF, Images, TXT, DOCX
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <FileDropzone onFilesSelected={handleFilesSelected} />
-            </CardContent>
-          </Card>
+        <Tabs defaultValue="rename" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="rename">Rename Files</TabsTrigger>
+            <TabsTrigger value="history">History</TabsTrigger>
+            <TabsTrigger value="templates">Templates</TabsTrigger>
+          </TabsList>
 
-          {files.length > 0 && (
+          <TabsContent value="rename" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>File Renaming</CardTitle>
+                <CardTitle>Add Files</CardTitle>
                 <CardDescription>
-                  Review and edit AI-generated filenames before applying
+                  Drop your files here or click to browse. Supported formats: PDF, Images, TXT, DOCX
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <FileList files={files} onRenameComplete={handleRenameComplete} />
+                <FileDropzone onFilesSelected={handleFilesSelected} />
               </CardContent>
             </Card>
-          )}
-        </div>
+
+            {files.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>File Renaming</CardTitle>
+                  <CardDescription>
+                    Review and edit AI-generated filenames before applying
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <FileList files={files} onRenameComplete={handleRenameComplete} />
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="history">
+            <History />
+          </TabsContent>
+
+          <TabsContent value="templates">
+            <TemplateManager />
+          </TabsContent>
+        </Tabs>
 
         <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       </div>
