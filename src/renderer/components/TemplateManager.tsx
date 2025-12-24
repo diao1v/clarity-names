@@ -5,6 +5,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { trpc } from '@/lib/trpc';
+import { useToast } from '@/hooks/use-toast';
 
 interface Template {
   id: number;
@@ -21,6 +22,7 @@ export function TemplateManager() {
     template: '',
     description: '',
   });
+  const { toast } = useToast();
 
   useEffect(() => {
     loadTemplates();
@@ -38,6 +40,11 @@ export function TemplateManager() {
 
   const handleAddTemplate = async () => {
     if (!newTemplate.name || !newTemplate.template) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fill in the template name and pattern',
+        variant: 'destructive',
+      });
       return;
     }
 
@@ -46,9 +53,18 @@ export function TemplateManager() {
       await trpc.createTemplate.mutate(newTemplate);
       setNewTemplate({ name: '', template: '', description: '' });
       setIsAdding(false);
+      toast({
+        title: 'Success',
+        description: 'Template created successfully',
+      });
       loadTemplates();
     } catch (error) {
       console.error('Failed to create template:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to create template',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -56,9 +72,18 @@ export function TemplateManager() {
     try {
       // @ts-ignore
       await trpc.deleteTemplate.mutate(id);
+      toast({
+        title: 'Success',
+        description: 'Template deleted successfully',
+      });
       loadTemplates();
     } catch (error) {
       console.error('Failed to delete template:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to delete template',
+        variant: 'destructive',
+      });
     }
   };
 

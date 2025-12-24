@@ -3,7 +3,6 @@ import { Settings as SettingsIcon, Moon, Sun } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Switch } from './ui/switch';
 import {
   Select,
   SelectContent,
@@ -14,6 +13,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { trpc } from '@/lib/trpc';
+import { useToast } from '@/hooks/use-toast';
 
 interface SettingsProps {
   isOpen: boolean;
@@ -29,6 +29,7 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
     ollamaModel: 'llama2',
     theme: 'system' as 'light' | 'dark' | 'system',
   });
+  const { toast } = useToast();
 
   useEffect(() => {
     if (isOpen) {
@@ -56,9 +57,18 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
         openaiApiKey: settings.openaiApiKey || undefined,
       });
       applyTheme(settings.theme);
+      toast({
+        title: 'Success',
+        description: 'Settings saved successfully',
+      });
       onClose();
     } catch (error) {
       console.error('Failed to save settings:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to save settings',
+        variant: 'destructive',
+      });
     }
   };
 

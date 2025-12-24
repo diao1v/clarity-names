@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Settings as SettingsIcon } from 'lucide-react';
 import { Button } from './components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
+import { Toaster } from './components/ui/toaster';
 import { FileDropzone } from './components/FileDropzone';
 import { FileList } from './components/FileList';
 import { Settings } from './components/Settings';
@@ -25,7 +26,8 @@ function App() {
   };
 
   const handleRenameComplete = () => {
-    // Could show a success message or refresh the file list
+    // Reset files after successful rename
+    setFiles([]);
   };
 
   return (
@@ -92,6 +94,7 @@ function App() {
         </Tabs>
 
         <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+        <Toaster />
       </div>
     </div>
   );

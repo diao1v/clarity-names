@@ -3,6 +3,7 @@ import { History as HistoryIcon, Undo2 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { trpc } from '@/lib/trpc';
+import { useToast } from '@/hooks/use-toast';
 
 interface HistoryItem {
   id: number;
@@ -15,6 +16,7 @@ interface HistoryItem {
 export function History() {
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     loadHistory();
@@ -38,10 +40,25 @@ export function History() {
       // @ts-ignore
       const result = await trpc.undoRename.mutate(id);
       if (result.success) {
+        toast({
+          title: 'Success',
+          description: 'File rename has been undone',
+        });
         loadHistory(); // Reload history
+      } else {
+        toast({
+          title: 'Error',
+          description: 'Failed to undo rename. File may have been moved or deleted.',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
       console.error('Failed to undo rename:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to undo rename',
+        variant: 'destructive',
+      });
     }
   };
 

@@ -11,6 +11,7 @@ import {
 } from './ui/select';
 import { FileText, Sparkles, Check, X, Loader2 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
+import { useToast } from '@/hooks/use-toast';
 
 interface FileItem {
   path: string;
@@ -30,6 +31,7 @@ export function FileList({ files, onRenameComplete }: FileListProps) {
   const [templates, setTemplates] = useState<any[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     loadTemplates();
@@ -57,6 +59,11 @@ export function FileList({ files, onRenameComplete }: FileListProps) {
       }
     } catch (error) {
       console.error('Failed to load templates:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to load templates. Please check your settings.',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -146,6 +153,12 @@ export function FileList({ files, onRenameComplete }: FileListProps) {
         await renameFile(i);
       }
     }
+
+    const successCount = fileItems.filter((f) => f.status === 'done').length;
+    toast({
+      title: 'Batch Rename Complete',
+      description: `Successfully renamed ${successCount} file(s)`,
+    });
 
     if (onRenameComplete) {
       onRenameComplete();
