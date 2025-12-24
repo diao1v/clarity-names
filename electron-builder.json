@@ -1,0 +1,23 @@
+{
+  "appId": "com.clarity.names",
+  "productName": "Clarity Names",
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "dist/**/*",
+    "index.html",
+    "package.json"
+  ],
+  "mac": {
+    "category": "public.app-category.utilities",
+    "target": ["dmg", "zip"]
+  },
+  "win": {
+    "target": ["nsis", "portable"]
+  },
+  "linux": {
+    "target": ["AppImage", "deb"],
+    "category": "Utility"
+  }
+}
