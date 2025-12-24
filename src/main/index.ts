@@ -31,10 +31,10 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  // Setup tRPC IPC handler
-  createIPCHandler({ router: appRouter, windows: [mainWindow!] });
-  
   createWindow();
+  
+  // Setup tRPC IPC handler after window is created
+  createIPCHandler({ router: appRouter, windows: [mainWindow!] });
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {

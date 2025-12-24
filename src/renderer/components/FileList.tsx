@@ -13,6 +13,11 @@ import { FileText, Sparkles, Check, X, Loader2 } from 'lucide-react';
 import { trpc } from '@/lib/trpc';
 import { useToast } from '@/hooks/use-toast';
 
+// Electron File type with path property
+interface ElectronFile extends File {
+  path?: string;
+}
+
 interface FileItem {
   path: string;
   name: string;
@@ -40,8 +45,8 @@ export function FileList({ files, onRenameComplete }: FileListProps) {
   useEffect(() => {
     if (files.length > 0) {
       const items: FileItem[] = files.map((file) => ({
-        // @ts-ignore - File has path property in Electron
-        path: file.path || file.name,
+        // In Electron, File objects have a path property
+        path: (file as ElectronFile).path || file.name,
         name: file.name,
         suggestedName: '',
         status: 'pending',
